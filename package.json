@@ -3,11 +3,11 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev:client": "next dev",
+        "dev:client": "next dev -p 3001",
         "dev:server": "nodemon ./server/index.ts",
         "build:client": "next build",
         "build:server": "tsc ./server/index.ts --outDir ./dist/server",
-        "start:client": "next start",
+        "start:client": "next start -p 3001",
         "start:server": "node ./dist/server/index.js",
         "lint:client": "next lint",
         "lint:server": "eslint ./server",
