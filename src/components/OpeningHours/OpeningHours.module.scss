@@ -1,0 +1,18 @@
+.button {
+    padding: 12px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.hoursGroup {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 8px 0;
+    padding: 8px 0;
+    max-width: 300px;
+    border-bottom: 1px solid var(--color-accent);
+}
+
+.hours {
+    text-align: right;
+}

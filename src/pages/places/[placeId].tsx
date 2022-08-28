@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next'
-import OpeningHours from '../../components/OpeningHours'
-import { Place } from '../../../types/place'
+import PlaceComponent from '../../components/Place'
+import type { Place } from '../../../types/place'
+import Link from 'next/link'
 
 type Props = {
     place: Place
@@ -8,10 +9,8 @@ type Props = {
 
 function Page({ place }: Props) {
     return (
-        <div className="container">
-            <h1>{place.name}</h1>
-            <p>{place.location}</p>
-            <OpeningHours hours={place.openingHours} />
+        <div>
+            <PlaceComponent place={place} />
         </div>
     )
 }

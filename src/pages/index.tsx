@@ -15,12 +15,18 @@ const Home: NextPage = () => {
 
             <main className={styles.main}>
                 <h1 className={styles.title}>Hello!</h1>
-                <Link href="/places/GXvPAor1ifNfpF0U5PTG0w">
-                    <a>Try out Casa Ferlin</a>
-                </Link>
-                <Link href="/places/ohGSnJtMIC5nPfYRi_HTAg">
-                    <a>... or Le Café du Marché</a>
-                </Link>
+                <span>
+                    Try out{' '}
+                    <Link href="/places/GXvPAor1ifNfpF0U5PTG0w">
+                        <a>Casa Ferlin</a>
+                    </Link>
+                </span>
+                <span>
+                    ... or{' '}
+                    <Link href="/places/ohGSnJtMIC5nPfYRi_HTAg">
+                        <a>Le Café du Marché</a>
+                    </Link>
+                </span>
             </main>
         </div>
     )
