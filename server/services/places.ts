@@ -1,7 +1,8 @@
 import * as R from 'ramda'
+import { DayName, ExternalApiPlace, OpeningDays, Day, OpeningHoursGroup } from '../../types/place'
 
-const getOpenAndClosedDays = (openingDays: any) => {
-    const dayNames = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+const getOpenAndClosedDays = (openingDays: OpeningDays) => {
+    const dayNames: DayName[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
     return dayNames.map((dayName) => {
         const dayOpeningHours = openingDays[dayName]
@@ -19,10 +20,10 @@ const getOpenAndClosedDays = (openingDays: any) => {
     })
 }
 
-const groupDaysByOpeningHours = (allDays: { name: string; hours: any }[]) => {
+const groupDaysByOpeningHours = (allDays: Day[]) => {
     let previousDay = allDays[0]
     let startDayName = allDays[0].name
-    let hours: any = []
+    let hours: OpeningHoursGroup[] = []
 
     for (const day of allDays) {
         if (!R.equals(day.hours, previousDay.hours)) {
@@ -52,14 +53,14 @@ const groupDaysByOpeningHours = (allDays: { name: string; hours: any }[]) => {
     return hours
 }
 
-export const parseOpeningHours = (openingDays: any) => {
+export const parseOpeningHours = (openingDays: OpeningDays) => {
     const allDays = getOpenAndClosedDays(openingDays)
 
     return groupDaysByOpeningHours(allDays)
 }
 
 const placesService = {
-    parsePlace: (place: any) => {
+    parsePlace: (place: ExternalApiPlace) => {
         return {
             id: place.local_entry_id,
             name: place.displayed_what,
