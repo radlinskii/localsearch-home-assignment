@@ -4,7 +4,7 @@ import express from 'express'
 import placesRouter from './routes/places'
 
 const app = express()
-const port = process.env.API_PORT
+const port = process.env.API_PORT || 3000
 
 app.use(express.json())
 app.use('/api/places', placesRouter)
