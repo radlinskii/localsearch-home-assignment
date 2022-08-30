@@ -13,6 +13,7 @@ export default function PlaceComponent({ place }: Props) {
         <>
             <h1 className={styles.name}>{place.name}</h1>
             <p className={styles.location}>{place.location}</p>
+            <p className={place.isOpen ? styles.open : styles.closed}>{place.isOpen ? 'Open' : 'Closed'}</p>
             <OpeningHours hours={place.openingHours} />
         </>
     )

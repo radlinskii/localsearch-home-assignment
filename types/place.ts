@@ -23,6 +23,7 @@ export type Place = {
     name: string
     location: string
     openingHours: OpeningHoursGroup[]
+    isOpen: boolean
 }
 
 export type ExternalApiPlace = {

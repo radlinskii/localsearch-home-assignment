@@ -1,6 +1,16 @@
 import * as R from 'ramda'
 import { DayName, ExternalApiPlace, OpeningDays, Day, OpeningHoursGroup } from '../../types/place'
 
+const dayIndexesToDayNames: Record<number, DayName> = {
+    0: 'sunday',
+    1: 'monday',
+    2: 'tuesday',
+    3: 'wednesday',
+    4: 'thursday',
+    5: 'friday',
+    6: 'saturday',
+}
+
 const getOpenAndClosedDays = (openingDays: OpeningDays) => {
     const dayNames: DayName[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
@@ -59,6 +69,41 @@ export const parseOpeningHours = (openingDays: OpeningDays) => {
     return groupDaysByOpeningHours(allDays)
 }
 
+export const getTimePart = (time: string) => {
+    return { hour: parseInt(time.split(':')[0]), minutes: parseInt(time.split(':')[1]) }
+}
+
+export const checkIfPlaceIsOpen = (openingDays: OpeningDays) => {
+    const allDays = getOpenAndClosedDays(openingDays)
+
+    const currentDate = new Date()
+
+    currentDate.setHours(20, 0, 0, 0)
+
+    const currentDayIndex = currentDate.getDay()
+    const currentDayName = dayIndexesToDayNames[currentDayIndex]
+
+    const currentDay = allDays.find((day) => day.name === currentDayName)
+
+    if (!currentDay || !currentDay.hours) {
+        return false
+    }
+
+    return currentDay.hours.some((hour) => {
+        const startTime = new Date(currentDate)
+        const startTimeParts = getTimePart(hour.start)
+        startTime.setHours(startTimeParts.hour, startTimeParts.minutes, 0, 0)
+
+        const endTime = new Date(currentDate)
+        const endTimeParts = getTimePart(hour.end)
+        endTime.setHours(endTimeParts.hour, endTimeParts.minutes, 0, 0)
+
+        // end time is in the next day if time was midnight
+
+        return currentDate >= startTime && currentDate < endTime
+    })
+}
+
 const placesService = {
     parsePlace: (place: ExternalApiPlace) => {
         return {
@@ -66,6 +111,7 @@ const placesService = {
             name: place.displayed_what,
             location: place.displayed_where,
             openingHours: parseOpeningHours(place.opening_hours.days),
+            isOpen: checkIfPlaceIsOpen(place.opening_hours.days),
         }
     },
 }
