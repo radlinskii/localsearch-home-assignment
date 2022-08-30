@@ -78,8 +78,6 @@ export const checkIfPlaceIsOpen = (openingDays: OpeningDays) => {
 
     const currentDate = new Date()
 
-    currentDate.setHours(20, 0, 0, 0)
-
     const currentDayIndex = currentDate.getDay()
     const currentDayName = dayIndexesToDayNames[currentDayIndex]
 
@@ -104,14 +102,61 @@ export const checkIfPlaceIsOpen = (openingDays: OpeningDays) => {
     })
 }
 
+const getNextOpeningChange = (openingDays: OpeningDays) => {
+    const allDays = getOpenAndClosedDays(openingDays)
+
+    const currentDate = new Date()
+
+    const currentDayIndex = currentDate.getDay()
+
+    const daysFromToday = [...allDays.slice(currentDayIndex), ...allDays.slice(0, currentDayIndex + 1)]
+
+    const datesAfterCurrentDate = daysFromToday
+        .map((day, dayIndex) => {
+            return day.hours
+                ? day.hours
+                      .map((hour) => {
+                          const startTime = new Date(currentDate)
+                          startTime.setDate(startTime.getDate() + dayIndex)
+                          const startTimeParts = getTimePart(hour.start)
+                          startTime.setHours(startTimeParts.hour, startTimeParts.minutes, 0, 0)
+
+                          const endTime = new Date(currentDate)
+                          endTime.setDate(endTime.getDate() + dayIndex)
+                          const endTimeParts = getTimePart(hour.end)
+                          endTime.setHours(endTimeParts.hour, endTimeParts.minutes, 0, 0)
+
+                          return [
+                              { date: startTime, type: 'start' },
+                              { date: endTime, type: 'end' },
+                          ]
+                      })
+                      .flat()
+                : []
+        })
+        .flat()
+
+    const nextOpeningChange = datesAfterCurrentDate.find((date) => {
+        return date.date > currentDate
+    })
+
+    return nextOpeningChange
+}
+
 const placesService = {
     parsePlace: (place: ExternalApiPlace) => {
+        // next steps that would be done if we had time:
+        // checking if place is currently open if here using the result of getNextOpeningChange
+        // simplifying data send in `nextOpeningChange` to only contain the time and name of the day
+        // displaying the `nextOpeningChange` data in the UI
+
         return {
             id: place.local_entry_id,
             name: place.displayed_what,
             location: place.displayed_where,
             openingHours: parseOpeningHours(place.opening_hours.days),
             isOpen: checkIfPlaceIsOpen(place.opening_hours.days),
+            nextOpeningChange: getNextOpeningChange(place.opening_hours.days),
         }
     },
 }
